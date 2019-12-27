@@ -4,28 +4,32 @@ import food
 import collision_detection
 import numpy as np
 
-pygame.init()
-WIN_WIDTH, WIN_HEIGHT = 800, 800
-WIN_SIZE = (WIN_WIDTH, WIN_HEIGHT)
-
-BLOCK_WIDTH, BLOCK_HEIGHT = 50, 50 
-BLOCK_SIZE = (BLOCK_WIDTH, BLOCK_HEIGHT)
-
-CAPTION = "AI plays snake"
-game_running = False
-win = pygame.display.set_mode(WIN_SIZE)
-snake_instance = None
-food_instance = None
-collision_detection_instance = None
-direction = (1, 0)
-
 def initialize():
-    global WIN_SIZE, WIN_WIDTH, WIN_HEIGHT, CAPTION, game_running, snake_instance, food_instance, collision_detection_instance
-    game_running = True
+    global WIN_SIZE, WIN_WIDTH, WIN_HEIGHT, CAPTION, game_running, snake_instance, food_instance, collision_detection_instance, win
+    global BLOCK_WIDTH, BLOCK_HEIGHT, BLOCK_SIZE, direction
+    
+    pygame.init()
+    
+    BLOCK_WIDTH, BLOCK_HEIGHT = 50, 50 
+    BLOCK_SIZE = (BLOCK_WIDTH, BLOCK_HEIGHT)
+    
+    WIN_WIDTH, WIN_HEIGHT = 800, 800
+    WIN_SIZE = (WIN_WIDTH, WIN_HEIGHT)
+    win = pygame.display.set_mode(WIN_SIZE)
+    
+    snake_instance = None
+    food_instance = None
+    collision_detection_instance = None
+    direction = (1, 0)
+    
     snake_instance = snake.Snake((WIN_WIDTH/2, WIN_HEIGHT/2), 4, BLOCK_SIZE)
     food_instance = food.Food(snake_instance.body, WIN_SIZE, BLOCK_WIDTH, BLOCK_HEIGHT)
     collision_detection_instance = collision_detection.collision_detector()
+    
+    CAPTION = "AI plays snake"
     pygame.display.set_caption(CAPTION)
+    
+    game_running = True
     
     
 def player_input():
