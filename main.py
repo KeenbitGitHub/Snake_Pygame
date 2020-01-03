@@ -1,3 +1,3 @@
 import game
 
-game_instance = game.Game()
+game_instance1 = game.Game(True)

@@ -18,8 +18,10 @@ class Game:
     BLOCK_HEIGHT = None
     BLOCK_SIZE = None
     direction = None
+    simulate = None
     
-    def __init__(self):
+    def __init__(self, simulate):
+        self.simulate = simulate
         self.main()
     
     def initialize(self):
@@ -30,7 +32,8 @@ class Game:
         
         self.WIN_WIDTH, self.WIN_HEIGHT = 800, 800
         self.WIN_SIZE = (self.WIN_WIDTH, self.WIN_HEIGHT)
-        self.win = pygame.display.set_mode(self.WIN_SIZE)
+        if (self.simulate):
+            self.win = pygame.display.set_mode(self.WIN_SIZE)
         
         self.snake_instance = None
         self.food_instance = None
@@ -41,14 +44,18 @@ class Game:
         self.food_instance = food.Food(self.snake_instance.body, self.WIN_SIZE, self.BLOCK_WIDTH, self.BLOCK_HEIGHT)
         self.collision_detection_instance = collision_detection.collision_detector()
         
-        self.CAPTION = "AI plays snake"
-        pygame.display.set_caption(self.CAPTION)
+        if (self.simulate):
+            self.CAPTION = "AI plays snake"
+            pygame.display.set_caption(self.CAPTION)
         
         self.game_running = True
         
         
     def player_input(self):
-        UPDATE_SPEED = 200
+        if (self.simulate):
+            UPDATE_SPEED = 200
+        else:
+            UPDATE_SPEED = 2
         update_move = False
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():
@@ -94,5 +101,7 @@ class Game:
         
         while self.snake_instance.alive and self.game_running:
             self.player_input()
-            self.render()
+            print("Running")
+            if (self.simulate):
+                self.render()
             self.collision()
