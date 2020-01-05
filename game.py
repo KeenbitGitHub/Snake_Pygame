@@ -24,6 +24,7 @@ class Game:
         self.simulate = simulate
         self.main()
     
+    # Initializes variables
     def initialize(self):
         pygame.init()
         
@@ -51,6 +52,7 @@ class Game:
         self.game_running = True
         
         
+    # Checks for player input
     def player_input(self):
         if (self.simulate):
             UPDATE_SPEED = 200
@@ -81,11 +83,13 @@ class Game:
         pygame.time.delay(UPDATE_SPEED)
         
         
+    # Renders game
     def render(self):
         self.food_instance.render(self.BLOCK_WIDTH, self.BLOCK_HEIGHT, self.win)
         self.snake_instance.render(self.BLOCK_WIDTH, self.BLOCK_HEIGHT, self.win)
         pygame.display.update()
         
+    # Checks for collision
     def collision(self):
         col_result = self.collision_detection_instance.check_collision(self.snake_instance.head, 
             self.snake_instance.body, self.WIN_SIZE, self.BLOCK_SIZE, self.food_instance)
@@ -96,12 +100,12 @@ class Game:
             self.food_instance.respawn(self.snake_instance.body, self.WIN_SIZE, self.BLOCK_SIZE[0], self.BLOCK_SIZE[1])
             self.snake_instance.body = np.append(self.snake_instance.body, self.snake_instance.moved_from).reshape((-1, 2))
 
+    # Starts the game and the game-loop
     def main(self):
         self.initialize()
         
         while self.snake_instance.alive and self.game_running:
             self.player_input()
-            print("Running")
             if (self.simulate):
                 self.render()
             self.collision()
