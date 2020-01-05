@@ -30,5 +30,5 @@ To run the game, simply open the terminal and type the following
 python main.py
 ```
 
-## How to play
+### How to play
 To control the snake, simply use the arrow keys.
