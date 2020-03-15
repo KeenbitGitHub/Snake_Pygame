@@ -5,51 +5,29 @@ import collision_detection
 import numpy as np
 
 class Game:
-    WIN_SIZE = None
-    WIN_WIDTH = None
-    WIN_HEIGHT = None
-    CAPTION = None
-    game_running = None
-    snake_instance = None
-    food_instance = None
-    collision_detection_instance = None
-    win = None
-    BLOCK_WIDTH = None
-    BLOCK_HEIGHT = None
-    BLOCK_SIZE = None
-    direction = None
-    simulate = None
-    
     def __init__(self, simulate):
-        self.simulate = simulate
+        self.initialize(simulate)
         self.main()
     
     # Initializes variables
-    def initialize(self):
-        pygame.init()
-        
+    def initialize(self, simulate):
+        self.simulate = simulate
         self.BLOCK_WIDTH, self.BLOCK_HEIGHT = 50, 50 
         self.BLOCK_SIZE = (self.BLOCK_WIDTH, self.BLOCK_HEIGHT)
-        
         self.WIN_WIDTH, self.WIN_HEIGHT = 800, 800
         self.WIN_SIZE = (self.WIN_WIDTH, self.WIN_HEIGHT)
-        if (self.simulate):
-            self.win = pygame.display.set_mode(self.WIN_SIZE)
-        
-        self.snake_instance = None
-        self.food_instance = None
-        self.collision_detection_instance = None
         self.direction = (1, 0)
-        
         self.snake_instance = snake.Snake((self.WIN_WIDTH/2, self.WIN_HEIGHT/2), 4, self.BLOCK_SIZE)
         self.food_instance = food.Food(self.snake_instance.body, self.WIN_SIZE, self.BLOCK_WIDTH, self.BLOCK_HEIGHT)
         self.collision_detection_instance = collision_detection.collision_detector()
+        self.game_running = True
+        
+        pygame.init()
         
         if (self.simulate):
+            self.win = pygame.display.set_mode(self.WIN_SIZE)
             self.CAPTION = "AI plays snake"
             pygame.display.set_caption(self.CAPTION)
-        
-        self.game_running = True
         
         
     # Checks for player input
@@ -102,8 +80,6 @@ class Game:
 
     # Starts the game and the game-loop
     def main(self):
-        self.initialize()
-        
         while self.snake_instance.alive and self.game_running:
             self.player_input()
             if (self.simulate):
