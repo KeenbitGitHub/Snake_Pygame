@@ -5,13 +5,16 @@ import collision_detection
 import numpy as np
 
 class Game:
-    def __init__(self, simulate):
-        self.initialize(simulate)
-        self.main()
+    def __init__(self, simulate, human_plays):
+        self.initialize(simulate, human_plays)
+        
+        if (self.human_plays):
+            self.main()
     
     # Initializes variables
-    def initialize(self, simulate):
+    def initialize(self, simulate, human_plays):
         self.simulate = simulate
+        self.human_plays = human_plays
         self.BLOCK_WIDTH, self.BLOCK_HEIGHT = 50, 50 
         self.BLOCK_SIZE = (self.BLOCK_WIDTH, self.BLOCK_HEIGHT)
         self.WIN_WIDTH, self.WIN_HEIGHT = 800, 800
@@ -29,37 +32,27 @@ class Game:
             self.CAPTION = "AI plays snake"
             pygame.display.set_caption(self.CAPTION)
         
-        
     # Checks for player input
     def player_input(self):
-        if (self.simulate):
-            UPDATE_SPEED = 200
-        else:
-            UPDATE_SPEED = 2
-        update_move = False
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
                 self.game_running = False
-                UPDATE_SPEED = 0
+                self.UPDATE_SPEED = 0
                 break
             elif (event.type == pygame.KEYDOWN):
-                if (event.key == pygame.K_LEFT and self.direction != (1, 0) and not update_move):
+                if (event.key == pygame.K_LEFT and self.direction != (1, 0) and not self.update_move):
                     self.direction = (-1, 0)
-                    update_move = True
-                elif (event.key == pygame.K_RIGHT and self.direction != (-1, 0) and not update_move):
+                    self.update_move = True
+                elif (event.key == pygame.K_RIGHT and self.direction != (-1, 0) and not self.update_move):
                     self.direction = (1, 0)
-                    update_move = True
-                elif (event.key == pygame.K_DOWN and self.direction != (0, -1) and not update_move):
+                    self.update_move = True
+                elif (event.key == pygame.K_DOWN and self.direction != (0, -1) and not self.update_move):
                     self.direction = (0, 1)
-                    update_move = True
-                elif (event.key == pygame.K_UP and self.direction != (0, 1) and not update_move):
+                    self.update_move = True
+                elif (event.key == pygame.K_UP and self.direction != (0, 1) and not self.update_move):
                     self.direction = (0, -1)
-                    update_move = True
-        
-        self.snake_instance.move(self.direction, self.BLOCK_SIZE)
-        pygame.time.delay(UPDATE_SPEED)
-        
+                    self.update_move = True
         
     # Renders game
     def render(self):
@@ -81,7 +74,21 @@ class Game:
     # Starts the game and the game-loop
     def main(self):
         while self.snake_instance.alive and self.game_running:
-            self.player_input()
+            self.update_move = False
+            self.UPDATE_SPEED = 200
+            
+            if (True):
+                self.player_input()
+                
+            self.snake_instance.move(self.direction, self.BLOCK_SIZE)
+            pygame.time.delay(self.UPDATE_SPEED)
+                
             if (self.simulate):
                 self.render()
+                
             self.collision()
+            
+        self.snake_instance.dead_render(self.BLOCK_WIDTH, self.BLOCK_HEIGHT, self.win)
+        self.food_instance.dead_render(self.BLOCK_WIDTH, self.BLOCK_HEIGHT, self.win)
+            
+        

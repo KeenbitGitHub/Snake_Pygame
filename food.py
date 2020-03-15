@@ -19,3 +19,6 @@ class Food:
     # Renders a piece of food
     def render(self, BLOCK_WIDTH, BLOCK_HEIGHT, win):
         pygame.draw.rect(win, (230, 0, 0), (self.position[0], self.position[1], BLOCK_WIDTH, BLOCK_HEIGHT))
+        
+    def dead_render(self, BLOCK_WIDTH, BLOCK_HEIGHT, win):
+        pygame.draw.rect(win, (0, 0, 0), (self.position[0], self.position[1], BLOCK_WIDTH, BLOCK_HEIGHT))
