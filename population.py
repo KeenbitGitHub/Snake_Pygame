@@ -9,9 +9,9 @@ class Population:
         
         for i in range(self.size):
             if (i == self.best_snake):
-                self.population = np.append(self.population, game.Game(True, True))
+                self.population = np.append(self.population, game.Game(True, True, size))
             else:
-                self.population = np.append(self.population, game.Game(False, False))
+                self.population = np.append(self.population, game.Game(False, False, size))
                 
         self.update_population()
             

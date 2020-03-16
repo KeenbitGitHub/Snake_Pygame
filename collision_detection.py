@@ -23,10 +23,7 @@ class collision_detector:
     def check_collision(self, snake_head, snake_body, WIN_SIZE, BLOCK_SIZE, food):
         # Returns 1 if wall is hit or snake bites itself
         # Returns 2 if snake eats food
-        # Returns 3 if nothing happens
         if (self.snake_walls(snake_head, WIN_SIZE, BLOCK_SIZE) or self.snake_suicide(snake_head, snake_body)):
             return 1
         elif (self.snake_food(snake_head, food)):
             return 2
-        else:
-            return 3

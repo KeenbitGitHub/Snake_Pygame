@@ -1,7 +1,11 @@
 import numpy as np
 
 class GE:
-    def calc_fitness(self):
+    def __init__(self, population_size, n_generations = None):
+        self.population_size = population_size
+        self.n_generations = n_generations
+    
+    def find_best_snake(self):
         pass
     
     def crossover(self):

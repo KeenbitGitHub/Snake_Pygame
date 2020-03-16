@@ -5,14 +5,14 @@ import collision_detection
 import numpy as np
 
 class Game:
-    def __init__(self, simulate, human_plays):
-        self.initialize(simulate, human_plays)
+    def __init__(self, simulate, human_plays, pop_size = 1, fitness = 0):
+        self.initialize(simulate, human_plays, fitness, pop_size)
         
         if (self.human_plays):
             self.main()
     
     # Initializes variables
-    def initialize(self, simulate, human_plays):
+    def initialize(self, simulate, human_plays, fitness, pop_size):
         self.simulate = simulate
         self.human_plays = human_plays
         self.BLOCK_WIDTH, self.BLOCK_HEIGHT = 50, 50 
@@ -25,6 +25,9 @@ class Game:
         self.collision_detection_instance = collision_detection.collision_detector()
         self.win = pygame.display.set_mode(self.WIN_SIZE)
         self.game_running = True
+        self.fitness = fitness
+        self.pop_size = pop_size
+        self.available_moves = 25
         
         pygame.init()
         
@@ -65,16 +68,25 @@ class Game:
         col_result = self.collision_detection_instance.check_collision(self.snake_instance.head, 
             self.snake_instance.body, self.WIN_SIZE, self.BLOCK_SIZE, self.food_instance)
         
-        if (col_result == 1):
+        if (col_result == 1): # Wall is hit or snake bites itself
             self.snake_instance.alive = False
-        elif (col_result == 2):
+        elif (col_result == 2): # If snake eats food
             self.food_instance.respawn(self.snake_instance.body, self.WIN_SIZE, self.BLOCK_SIZE[0], self.BLOCK_SIZE[1])
             self.snake_instance.body = np.append(self.snake_instance.body, self.snake_instance.moved_from).reshape((-1, 2))
+            self.fitness += 500
+            self.available_moves += 25
 
     # Starts the game and the game-loop
     def main(self):
         self.update_move = False
-        self.UPDATE_SPEED = 200
+        self.UPDATE_SPEED = int(200/self.pop_size)
+        
+        self.fitness += 10
+        self.available_moves -= 1
+        print(self.available_moves)
+        
+        if (self.available_moves <= 0):
+            self.snake_instance.alive = False
         
         if (self.human_plays):
             self.player_input()
