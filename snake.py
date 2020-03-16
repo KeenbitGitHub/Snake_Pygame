@@ -35,11 +35,3 @@ class Snake:
             pygame.draw.rect(win, (0, 255, 0), (part[0], part[1], BLOCK_WIDTH, BLOCK_HEIGHT))
         
         pygame.draw.rect(win, (0, 0, 0), (self.moved_from[0], self.moved_from[1], BLOCK_WIDTH, BLOCK_HEIGHT))
-        
-    def dead_render(self, BLOCK_WIDTH, BLOCK_HEIGHT, win):
-        pygame.draw.rect(win, (0, 0, 0), (self.head[0], self.head[1], BLOCK_WIDTH, BLOCK_HEIGHT))
-            
-        for part in self.body[1:]:
-            pygame.draw.rect(win, (0, 0, 0), (part[0], part[1], BLOCK_WIDTH, BLOCK_HEIGHT))
-        
-        pygame.draw.rect(win, (0, 0, 0), (self.moved_from[0], self.moved_from[1], BLOCK_WIDTH, BLOCK_HEIGHT))

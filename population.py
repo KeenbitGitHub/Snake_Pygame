@@ -5,11 +5,11 @@ class Population:
     def __init__(self, size):
         self.size = size
         self.population = np.array([])
-        self.best_snake = np.random.randint(0, self.size) # first snake to simulate chosen randomly
+        self.best_snake = 0
         
         for i in range(self.size):
-            if (i == i):
-                self.population = np.append(self.population, game.Game(True, False))
+            if (i == self.best_snake):
+                self.population = np.append(self.population, game.Game(True, True))
             else:
                 self.population = np.append(self.population, game.Game(False, False))
                 
@@ -23,6 +23,6 @@ class Population:
         return True
     
     def update_population(self):
-        for instance in self.population:
-            if (instance.snake_instance.alive):
+        while (not self.check_if_all_dead()):
+            for instance in self.population:
                 instance.main()
