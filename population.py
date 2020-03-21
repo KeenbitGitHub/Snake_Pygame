@@ -6,6 +6,7 @@ class Population:
         self.size = size
         self.population = np.array([])
         self.best_snake = 0
+        self.best_fitness = 0
         
         for i in range(self.size):
             if (i == self.best_snake):
@@ -26,3 +27,8 @@ class Population:
         while (not self.check_if_all_dead()):
             for instance in self.population:
                 instance.main()
+                
+        for instance in self.population:
+            if (instance.fitness > self.best_fitness):
+                self.best_fitness = instance.fitness
+                self.best_snake = instance

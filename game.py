@@ -3,6 +3,7 @@ import snake
 import food
 import collision_detection
 import numpy as np
+from NeuralNetwork import NeuralNetwork as nn
 
 class Game:
     def __init__(self, simulate, human_plays, pop_size = 1, fitness = 0):
@@ -10,6 +11,37 @@ class Game:
         
         if (self.human_plays):
             self.main()
+        else:
+            model = nn.NeuralNetwork(12)
+            model.add_layer(16)
+            model.add_layer(16)
+            model.add_layer(4)
+            
+            """
+            The neural network takes the following inputs:
+                0) How far the snake can move to the left before hitting an object
+                1) How far the snake can move to the right before hitting an object
+                2) How far the snake can move to the up before hitting an object
+                3) How far the snake can move to the down before hitting an object
+                4) If the object to the left (of the head of the snake) is food
+                5) If the object to the left (of the head of the snake) is wall/the snake itself
+                6) If the object to the right (of the head of the snake) is food
+                7) If the object to the right (of the head of the snake) is a wall/the snake itself
+                8) If the object to the up (of the head of the snake) is food
+                9) If the object to the up (of the head of the snake) is a wall/the snake itself
+                10) If the object to the down (of the head of the snake) is food
+                11) If the object to the down (of the head of the snake) is a wall/the snake itself
+                12) If the snake is going left
+                13) If the snake is going right
+                14) If the snake is going up
+                15) If the snake is going down
+                
+            And has the following output:
+                1) (1) if the snake is going to the left, (0) if not
+                2) (1) if the snake is going to the right, (0) if not
+                3) (1) if the snake is going to the up, (0) if not
+                4) (1) if the snake is going to the down, (0) if not
+            """
     
     # Initializes variables
     def initialize(self, simulate, human_plays, fitness, pop_size):
@@ -28,6 +60,7 @@ class Game:
         self.fitness = fitness
         self.pop_size = pop_size
         self.available_moves = 25
+        self.nn_input = np.zeros((1, 12))
         
         pygame.init()
         
@@ -75,6 +108,57 @@ class Game:
             self.snake_instance.body = np.append(self.snake_instance.body, self.snake_instance.moved_from).reshape((-1, 2))
             self.fitness += 500
             self.available_moves += 25
+            
+    def set_nn_input(self):
+        def set_input_0():
+            for x in reversed(range(0, int(self.snake_instance.head[0]), self.BLOCK_WIDTH)):
+                if (x == self.food_instance.position[0] and self.snake_instance.head[1] == self.food_instance.position[1]):
+                    return self.snake_instance.head[0] - x
+                # NEEDS TO CHECK FOR SNAKE BODY
+            return self.snake_instance.head[0]
+        
+        def set_input_1():
+            for x in range(int(self.snake_instance.head[0]), self.WIN_WIDTH, self.BLOCK_WIDTH):
+                if (x == self.food_instance.position[0] and self.snake_instance.head[1] == self.food_instance.position[1]):
+                    return x - self.snake_instance.head[0]
+                # NEEDS TO CHECK FOR SNAKE BODY
+            return self.WIN_WIDTH - self.snake_instance.head[0]
+        
+        def set_input_2():
+            for y in reversed(range(0, int(self.snake_instance.head[1]), self.BLOCK_WIDTH)):
+                if (y == self.food_instance.position[1] and self.snake_instance.head[0] == self.food_instance.position[0]):
+                    return self.snake_instance.head[1] - y
+                # NEEDS TO CHECK FOR SNAKE BODY
+            return self.snake_instance.head[1]
+        
+        def set_input_3():
+            for y in range(int(self.snake_instance.head[1]), self.WIN_HEIGHT, self.BLOCK_WIDTH):
+                if (y == self.food_instance.position[1] and self.snake_instance.head[0] == self.food_instance.position[0]):
+                    return y - self.snake_instance.head[1]
+                # NEEDS TO CHECK FOR SNAKE BODY
+            return self.WIN_HEIGHT - self.snake_instance.head[1]
+        
+        # Sets inut 12 - 15
+        if (self.direction[0] == -1 and self.direction[1] == 0):
+            self.nn_input[0, 12] = 1
+            self.nn_input[0, 13] = 0
+            self.nn_input[0, 14] = 0
+            self.nn_input[0, 15] = 0
+        elif (self.direction[0] == 1 and self.direction[1] == 0):
+            self.nn_input[0, 12] = 0
+            self.nn_input[0, 13] = 1
+            self.nn_input[0, 14] = 0
+            self.nn_input[0, 15] = 0
+        elif (self.direction[0] == 0 and self.direction[1] == 1):
+            self.nn_input[0, 12] = 0
+            self.nn_input[0, 13] = 0
+            self.nn_input[0, 14] = 0
+            self.nn_input[0, 15] = 1
+        elif (self.direction[0] == 0 and self.direction[1] == -1):
+            self.nn_input[0, 12] = 0
+            self.nn_input[0, 13] = 0
+            self.nn_input[0, 14] = 1
+            self.nn_input[0, 15] = 0
 
     # Starts the game and the game-loop
     def main(self):
@@ -82,14 +166,20 @@ class Game:
         self.UPDATE_SPEED = int(200/self.pop_size)
         
         self.fitness += 10
-        self.available_moves -= 1
-        print(self.available_moves)
+        
+        """NEED TO BE UNCOMMENTED - COMMENTED FOR TESTING"""
+        #self.available_moves -= 1 
         
         if (self.available_moves <= 0):
             self.snake_instance.alive = False
         
         if (self.human_plays):
             self.player_input()
+            
+            """NEED TO BE REMOVED - ADDED FOR TESTING"""
+            self.set_nn_input() 
+        else:
+            self.set_nn_input()
             
         self.snake_instance.move(self.direction, self.BLOCK_SIZE)
         pygame.time.delay(self.UPDATE_SPEED)
@@ -98,5 +188,3 @@ class Game:
             self.render()
             
         self.collision()
-            
-        
