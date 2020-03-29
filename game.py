@@ -12,7 +12,7 @@ class Game:
         if (self.human_plays):
             self.main()
         else:
-            model = nn.NeuralNetwork(12)
+            model = nn.NeuralNetwork(16)
             model.add_layer(16)
             model.add_layer(16)
             model.add_layer(4)
@@ -60,7 +60,7 @@ class Game:
         self.fitness = fitness
         self.pop_size = pop_size
         self.available_moves = 25
-        self.nn_input = np.zeros((1, 12))
+        self.nn_input = np.zeros((1, 16))
         
         pygame.init()
         
@@ -114,28 +114,38 @@ class Game:
             for x in reversed(range(0, int(self.snake_instance.head[0]), self.BLOCK_WIDTH)):
                 if (x == self.food_instance.position[0] and self.snake_instance.head[1] == self.food_instance.position[1]):
                     return self.snake_instance.head[0] - x
-                # NEEDS TO CHECK FOR SNAKE BODY
+                elif (x in self.snake_instance.body[1:, 0] and self.snake_instance.head[1] in self.snake_instance.body[1:, 1] and self.nn_input[0, 13] != 1):
+                    print("LEFT")
+                    return self.snake_instance.head[0] - x
+                    
             return self.snake_instance.head[0]
         
         def set_input_1():
             for x in range(int(self.snake_instance.head[0]), self.WIN_WIDTH, self.BLOCK_WIDTH):
                 if (x == self.food_instance.position[0] and self.snake_instance.head[1] == self.food_instance.position[1]):
                     return x - self.snake_instance.head[0]
-                # NEEDS TO CHECK FOR SNAKE BODY
+                elif (x in self.snake_instance.body[1:, 0] and self.snake_instance.head[1] in self.snake_instance.body[1:, 1]  and self.nn_input[0, 12] != 1):
+                    print("RIGHT")
+                    return x - self.snake_instance.head[0]
+                
             return self.WIN_WIDTH - self.snake_instance.head[0]
         
         def set_input_2():
             for y in reversed(range(0, int(self.snake_instance.head[1]), self.BLOCK_WIDTH)):
                 if (y == self.food_instance.position[1] and self.snake_instance.head[0] == self.food_instance.position[0]):
                     return self.snake_instance.head[1] - y
-                # NEEDS TO CHECK FOR SNAKE BODY
+                elif (y in self.snake_instance.body[1:, 1] and self.snake_instance.head[0] in self.snake_instance.body[1:, 0]  and self.nn_input[0, 15] != 1):
+                    print("UP")
+                    return self.snake_instance.head[1] - y
             return self.snake_instance.head[1]
         
         def set_input_3():
             for y in range(int(self.snake_instance.head[1]), self.WIN_HEIGHT, self.BLOCK_WIDTH):
                 if (y == self.food_instance.position[1] and self.snake_instance.head[0] == self.food_instance.position[0]):
                     return y - self.snake_instance.head[1]
-                # NEEDS TO CHECK FOR SNAKE BODY
+                elif (y in self.snake_instance.body[1:, 1] and self.snake_instance.head[0] in self.snake_instance.body[1:, 0]  and self.nn_input[0, 14] != 1):
+                    print("DOWN")
+                    return y - self.snake_instance.head[1]
             return self.WIN_HEIGHT - self.snake_instance.head[1]
         
         # Sets inut 12 - 15
@@ -149,16 +159,21 @@ class Game:
             self.nn_input[0, 13] = 1
             self.nn_input[0, 14] = 0
             self.nn_input[0, 15] = 0
-        elif (self.direction[0] == 0 and self.direction[1] == 1):
-            self.nn_input[0, 12] = 0
-            self.nn_input[0, 13] = 0
-            self.nn_input[0, 14] = 0
-            self.nn_input[0, 15] = 1
         elif (self.direction[0] == 0 and self.direction[1] == -1):
             self.nn_input[0, 12] = 0
             self.nn_input[0, 13] = 0
             self.nn_input[0, 14] = 1
             self.nn_input[0, 15] = 0
+        elif (self.direction[0] == 0 and self.direction[1] == 1):
+            self.nn_input[0, 12] = 0
+            self.nn_input[0, 13] = 0
+            self.nn_input[0, 14] = 0
+            self.nn_input[0, 15] = 1
+            
+        set_input_0()
+        set_input_1()
+        set_input_2()
+        set_input_3()
 
     # Starts the game and the game-loop
     def main(self):
