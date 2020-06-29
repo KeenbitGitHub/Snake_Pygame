@@ -7,7 +7,7 @@ class HiddenLayer:
         self.a = np.zeros((dimensions, 1))
         self.b = np.random.uniform(size = (dimensions, 1))
         self.grad = np.zeros((dimensions, 1))
-        self.weights = np.random.uniform(size = (dimensions, dim_from))
+        self.weights = np.random.uniform(low = -1.0, high = 1.0, size = (dimensions, dim_from))
         
     def feedforward(self, input_weights, input_a):
         for i in range(self.dimensions):

@@ -2,8 +2,9 @@ import numpy as np
 import random
 import pygame
 
-class Food:
-    position = []
+class Food:   
+    def __init__(self, DONT_SPAWN_ARRAY, WIN_SIZE, BLOCK_WIDTH, BLOCK_HEIGHT):
+        self.respawn(DONT_SPAWN_ARRAY, WIN_SIZE, BLOCK_WIDTH, BLOCK_HEIGHT)
     
     # spawns a piece of food
     def respawn(self, DONT_SPAWN_ARRAY, WIN_SIZE, BLOCK_WIDTH, BLOCK_HEIGHT):
@@ -12,9 +13,6 @@ class Food:
         self.position = np.array([x, y])
         if ((self.position == DONT_SPAWN_ARRAY).all(axis = 1).any()):
             self.respawn(DONT_SPAWN_ARRAY, WIN_SIZE, BLOCK_WIDTH, BLOCK_HEIGHT)
-       
-    def __init__(self, DONT_SPAWN_ARRAY, WIN_SIZE, BLOCK_WIDTH, BLOCK_HEIGHT):
-        self.respawn(DONT_SPAWN_ARRAY, WIN_SIZE, BLOCK_WIDTH, BLOCK_HEIGHT)
     
     # Renders a piece of food
     def render(self, BLOCK_WIDTH, BLOCK_HEIGHT, win):

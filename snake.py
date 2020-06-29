@@ -1,20 +1,14 @@
 import pygame
 import numpy as np
 
-class Snake:
-    # Structure of snake: [head, body, body, ...,  tail]
-    body = None
-    head = None
-    alive = False
-    moved_from = [None, None]
-    
+class Snake:    
     def __init__(self, start_pos, snake_len, BLOCK_SIZE):
         self.spawn(start_pos, snake_len, BLOCK_SIZE)
         
     # Spawns snake
     def spawn(self, start_pos, snake_len, BLOCK_SIZE):
         self.alive = True
-        self.body = (np.array([start_pos[0] - 1 * BLOCK_SIZE[0], start_pos[1]])).reshape((-1, 2))
+        self.body = (np.array([start_pos[0] - 1 * BLOCK_SIZE[0], start_pos[1]])).reshape((-1, 2)).astype(int) 
         self.head = self.body[0]
         for i in range(2, snake_len + 2):
             self.body = (np.append(self.body, [start_pos[0] - i * BLOCK_SIZE[0], start_pos[1]])).reshape((-1, 2))

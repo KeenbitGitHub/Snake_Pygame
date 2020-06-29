@@ -50,8 +50,14 @@ class NeuralNetwork:
                             self.layers[l].grad[j] = 0
            
             if (epoch % 1 == 0):
-                print("Epoch {} done. Error: {}".format(epoch, self.find_error(self.predict(x), _t)))          
+                print("Epoch {} done. Error: {}".format(epoch, self.find_error(self.predict(x), _t)))
                             
+    def load_weights(self, weights):
+        for l in range(1, self.n_layers):
+            if (self.layers[l].weights.shape != weights[l - 1].shape):
+                raise Exception("Wrong dimensions given. Expected: {}, Given:{}".format(self.layers[l].weights.shape, weights[l - 1].shape))
+            self.layers[l].weights = weights[l - 1]
+    
     def _forwardprop(self, x):
         self.layers[0].feedforward(x)
         for l in range(1, self.n_layers):
