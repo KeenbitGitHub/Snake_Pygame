@@ -5,7 +5,7 @@ from candidate import candidate
 import matplotlib.pyplot as plt
 
 class population:
-    def __init__(self, SIZE, N_GENS, mutation_rate = 0.1):
+    def __init__(self, SIZE, N_GENS, mutation_rate = 0.05):
         self.SIZE = SIZE
         self.N_GENS = N_GENS
         self.mutation_rate = mutation_rate
@@ -27,7 +27,6 @@ class population:
                 print("Running candidate {} out of {}".format(c_index, self.SIZE))
                 element.run()
                 e_fitness.append(element.fitness)
-                print(element.fitness)
             runs.append(np.mean(e_fitness))
 
             self.reproduce(e_fitness)
@@ -49,6 +48,7 @@ class population:
         # Finds parents
         parent1 = self.pick_parent(pop_fitness)
         parent2 = self.pick_parent(pop_fitness)
+        
         # Cross over
         reproduction = np.array([np.array(parent1.nn.layers[1].weights), np.array(parent1.nn.layers[2].weights)])
         rnd_layer = np.random.randint(1, parent1.nn.n_layers - 1)
@@ -64,7 +64,7 @@ class population:
                 for el_index, element in enumerate(row):
                     if (el_index < rnd_col):
                         continue
-                    reproduction[l_index][r_index][el_index] = parent2.nn.layers[l_index + 1].weights[r_index][el_index]
+                    reproduction[l_index][r_index][el_index] = parent2.nn.layers[l_index + 1].weights[r_index][el_index].copy()
         
         # Creating new population with the new neural network
         self.create_population()
@@ -76,10 +76,9 @@ class population:
             if (rnd <= self.mutation_rate):
                 mutation = []
                 for layer in reproduction:
-                    mutation.append(layer + (np.random.normal(0, 1, size = layer.shape)/np.random.randint(1, 10)))
+                    mutation.append(layer + (np.random.normal(0, 1, size = layer.shape)))
                 
                 candidate.nn.load_weights(mutation)
             
 
-            
-pop = population(50, 50)
+pop = population(20, 50)

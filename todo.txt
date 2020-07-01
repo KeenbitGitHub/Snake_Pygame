@@ -3,5 +3,4 @@
 * Needs to look diagonal
 * Check if the body-part of the various look functions work properly
 * Update the nn library on github so it includes load_weights() and so weights are chosen between -1 and 1 (not between 0 and 1)
-* Look at weird warning (something with overflow)
 * Add multithreading

@@ -88,7 +88,7 @@ class Game:
             while self.snake_instance.alive:
                 self.player_input()
                 self.update_move = False
-                self.UPDATE_SPEED = 200
+                self.UPDATE_SPEED = 5
 
                 self.snake_instance.move(self.direction, self.BLOCK_SIZE)
                 pygame.time.delay(self.UPDATE_SPEED)
@@ -98,7 +98,7 @@ class Game:
                 
         else:
             self.update_move = False
-            self.UPDATE_SPEED = 200
+            self.UPDATE_SPEED = 5
 
             self.snake_instance.move(self.direction, self.BLOCK_SIZE)
             pygame.time.delay(self.UPDATE_SPEED)

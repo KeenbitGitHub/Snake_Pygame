@@ -6,7 +6,7 @@ from NeuralNetwork.NeuralNetwork import NeuralNetwork
 class candidate:
     def __init__(self):
         self.nn = NeuralNetwork(12)
-        self.nn.add_layer(12)
+        self.nn.add_layer(12, activation = "relu")
         self.nn.add_layer(4)
         self.game_instance = game.Game(False)
         self.fitness = 0
@@ -14,53 +14,57 @@ class candidate:
     
     def look_left(self):
         food_dist = -1
-        wall_dist = self.game_instance.snake_instance.head[0] + self.game_instance.BLOCK_WIDTH
+        wall_dist = 1/((self.game_instance.snake_instance.head[0] + self.game_instance.BLOCK_WIDTH)/self.game_instance.BLOCK_WIDTH)
         body_dist = -1
         for x in reversed(range(0, self.game_instance.snake_instance.head[0], self.game_instance.BLOCK_WIDTH)):
             if (x == self.game_instance.food_instance.position[0] and self.game_instance.snake_instance.head[1] == self.game_instance.food_instance.position[1]):
-                food_dist = self.game_instance.snake_instance.head[0] - x
+                #food_dist = (self.game_instance.snake_instance.head[0] - x)/self.game_instance.BLOCK_WIDTH
+                food_dist = 1
             
             if (x in self.game_instance.snake_instance.body[1:, 0] and self.game_instance.snake_instance.head[1] in self.game_instance.snake_instance.body[1:, 1]):
-                body_dist = self.game_instance.snake_instance.head[0] - x
+                body_dist = 1/((self.game_instance.snake_instance.head[0] - x)/self.game_instance.BLOCK_WIDTH)
         
         return food_dist, wall_dist, body_dist
     
     def look_right(self):
         food_dist = -1
-        wall_dist = self.game_instance.WIN_WIDTH - self.game_instance.snake_instance.head[0]
+        wall_dist = 1/((self.game_instance.WIN_WIDTH - self.game_instance.snake_instance.head[0])/self.game_instance.BLOCK_WIDTH)
         body_dist = -1
         for x in range(self.game_instance.snake_instance.head[0], self.game_instance.WIN_WIDTH, self.game_instance.BLOCK_WIDTH):
             if (x == self.game_instance.food_instance.position[0] and self.game_instance.snake_instance.head[1] == self.game_instance.food_instance.position[1]):
-                food_dist = x - self.game_instance.snake_instance.head[0]
+                #food_dist = (x - self.game_instance.snake_instance.head[0])/self.game_instance.BLOCK_WIDTH
+                food_dist = 1
             
             if (x in self.game_instance.snake_instance.body[1:, 0] and self.game_instance.snake_instance.head[1] in self.game_instance.snake_instance.body[1:, 1]):
-                body_dist = x - self.game_instance.snake_instance.head[0]
+                body_dist = 1/((x - self.game_instance.snake_instance.head[0])/self.game_instance.BLOCK_WIDTH)
         
         return food_dist, wall_dist, body_dist
     
     def look_up(self):
         food_dist = -1
-        wall_dist = self.game_instance.snake_instance.head[1] + self.game_instance.BLOCK_HEIGHT
+        wall_dist = 1/((self.game_instance.snake_instance.head[1] + self.game_instance.BLOCK_HEIGHT)/self.game_instance.BLOCK_HEIGHT)
         body_dist = -1
         for y in reversed(range(0, self.game_instance.snake_instance.head[1], self.game_instance.BLOCK_HEIGHT)):
             if (self.game_instance.snake_instance.head[0] == self.game_instance.food_instance.position[0] and y == self.game_instance.food_instance.position[1]):
-                food_dist = self.game_instance.snake_instance.head[1] - y
+                #food_dist = (self.game_instance.snake_instance.head[1] - y)/self.game_instance.BLOCK_HEIGHT
+                food_dist = 1
             
             if (y in self.game_instance.snake_instance.body[1:, 1] and self.game_instance.snake_instance.head[0] in self.game_instance.snake_instance.body[1:, 0]):
-                body_dist = self.game_instance.snake_instance.head[1] - y
+                body_dist = 1/((self.game_instance.snake_instance.head[1] - y)/self.game_instance.BLOCK_HEIGHT)
         
         return food_dist, wall_dist, body_dist
 
     def look_down(self):
         food_dist = -1
-        wall_dist = self.game_instance.WIN_HEIGHT - self.game_instance.snake_instance.head[1]
+        wall_dist = 1/((self.game_instance.WIN_HEIGHT - self.game_instance.snake_instance.head[1])/self.game_instance.BLOCK_HEIGHT)
         body_dist = -1
         for y in range(self.game_instance.snake_instance.head[1], self.game_instance.WIN_HEIGHT, self.game_instance.BLOCK_HEIGHT):
             if (self.game_instance.snake_instance.head[0] == self.game_instance.food_instance.position[0] and y == self.game_instance.food_instance.position[1]):
-                food_dist = y - self.game_instance.snake_instance.head[1]
+                #food_dist = (y - self.game_instance.snake_instance.head[1])/self.game_instance.BLOCK_HEIGHT
+                food_dist = 1
 
             elif (y in self.game_instance.snake_instance.body[1:, 1] and self.game_instance.snake_instance.head[0] in self.game_instance.snake_instance.body[1:, 0]):
-                body_dist = y - self.game_instance.snake_instance.head[1]
+                body_dist = 1/((y - self.game_instance.snake_instance.head[1])/self.game_instance.BLOCK_HEIGHT)
         
         return food_dist, wall_dist, body_dist
         
@@ -74,6 +78,7 @@ class candidate:
         return np.argmax(pred)
         
     def move(self):
+        """
         self.feedforward()
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():
@@ -109,7 +114,6 @@ class candidate:
         elif (move == 3 and self.game_instance.direction != (0, 1) and not self.game_instance.update_move):
             self.game_instance.direction = (0, -1)
             self.game_instance.update_move = True
-        """
             
         self.game_instance.main()
         
