@@ -9,8 +9,9 @@ class candidate:
         self.nn.add_layer(12, activation = "relu")
         self.nn.add_layer(4)
         self.game_instance = game.Game(False)
-        self.fitness = 0
         self.available_moves = 200
+        self.fitness = 0
+        self.lifetime = 0
     
     def look_left(self):
         food_dist = -1
@@ -133,7 +134,8 @@ class candidate:
             if (self.available_moves < 1):
                 self.game_instance.snake_instance.alive = False
             
-            self.fitness += 1
+            self.lifetime += 1
             
-        self.fitness = self.fitness**2 * 2**self.game_instance.score
+        self.fitness = self.lifetime * 2**self.game_instance.score
+        
         self.game_instance.clear_screen()

@@ -5,7 +5,7 @@ from candidate import candidate
 import matplotlib.pyplot as plt
 
 class population:
-    def __init__(self, SIZE, N_GENS, mutation_rate = 0.05):
+    def __init__(self, SIZE, N_GENS, mutation_rate = 0.1):
         self.SIZE = SIZE
         self.N_GENS = N_GENS
         self.mutation_rate = mutation_rate
@@ -14,9 +14,7 @@ class population:
         self.run()
         
     def create_population(self):
-        self.population = []
-        for _ in range(self.SIZE):
-            self.population.append(candidate())
+        self.population = [candidate() for _ in range(self.SIZE)]
         
     def run(self):
         runs = []
@@ -36,13 +34,17 @@ class population:
         
     def pick_parent(self, pop_fitness):
         # Randomly chooses parents. Better ai's have a greater chance of being picked.
-        fitness_distribution = []
-        s = np.sum(pop_fitness)
-        
-        for fit in pop_fitness:
-            fitness_distribution.append(fit/s)
+        #s = np.sum(pop_fitness)
+        #fitness_distribution = [fit/s for fit in pop_fitness]
                 
-        return np.random.choice(self.population, p = fitness_distribution)
+        #return np.random.choice(self.population, p = fitness_distribution)
+        
+        best_ai = self.population[0]
+        for ai in self.population:
+            if (ai.fitness > best_ai.fitness):
+                best_ai = ai
+                
+        return best_ai
             
     def reproduce(self, pop_fitness):
         # Finds parents
@@ -50,7 +52,7 @@ class population:
         parent2 = self.pick_parent(pop_fitness)
         
         # Cross over
-        reproduction = np.array([np.array(parent1.nn.layers[1].weights), np.array(parent1.nn.layers[2].weights)])
+        reproduction = np.array([parent1.nn.layers[1].weights.copy(), parent1.nn.layers[2].weights.copy()])
         rnd_layer = np.random.randint(1, parent1.nn.n_layers - 1)
         rnd_row = np.random.randint(0, parent1.nn.layers[rnd_layer].weights.shape[0])
         rnd_col = np.random.randint(0, parent1.nn.layers[rnd_layer].weights.shape[1])
@@ -70,15 +72,13 @@ class population:
         self.create_population()
         for candidate in self.population:
             candidate.nn.load_weights(reproduction)
-            
+
             # Mutation
             rnd = np.random.uniform()
             if (rnd <= self.mutation_rate):
-                mutation = []
-                for layer in reproduction:
-                    mutation.append(layer + (np.random.normal(0, 1, size = layer.shape)))
+                mutation = [layer + (np.random.normal(0, 1, size = layer.shape)/5) for layer in reproduction]
                 
                 candidate.nn.load_weights(mutation)
             
 
-pop = population(20, 50)
+pop = population(20, 500)
