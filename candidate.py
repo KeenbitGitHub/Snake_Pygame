@@ -14,58 +14,54 @@ class candidate:
         self.lifetime = 0
     
     def look_left(self):
-        food_dist = -1
-        wall_dist = 1/((self.game_instance.snake_instance.head[0] + self.game_instance.BLOCK_WIDTH)/self.game_instance.BLOCK_WIDTH)
-        body_dist = -1
+        food_dist = 0
+        wall_dist = 1/((self.game_instance.snake_instance.head[0]/self.game_instance.BLOCK_WIDTH) + 1/self.game_instance.BLOCK_WIDTH)
+        body_dist = 0
         for x in reversed(range(0, self.game_instance.snake_instance.head[0], self.game_instance.BLOCK_WIDTH)):
             if (x == self.game_instance.food_instance.position[0] and self.game_instance.snake_instance.head[1] == self.game_instance.food_instance.position[1]):
-                #food_dist = (self.game_instance.snake_instance.head[0] - x)/self.game_instance.BLOCK_WIDTH
-                food_dist = 1
+                food_dist = 1/((self.game_instance.snake_instance.head[0] - x)/self.game_instance.BLOCK_WIDTH)
             
             if (x in self.game_instance.snake_instance.body[1:, 0] and self.game_instance.snake_instance.head[1] in self.game_instance.snake_instance.body[1:, 1]):
-                body_dist = 1/((self.game_instance.snake_instance.head[0] - x)/self.game_instance.BLOCK_WIDTH)
+                body_dist = 1/(((self.game_instance.snake_instance.head[0] - x)/self.game_instance.BLOCK_WIDTH) + 1/(self.game_instance.BLOCK_WIDTH))
         
         return food_dist, wall_dist, body_dist
     
     def look_right(self):
-        food_dist = -1
-        wall_dist = 1/((self.game_instance.WIN_WIDTH - self.game_instance.snake_instance.head[0])/self.game_instance.BLOCK_WIDTH)
-        body_dist = -1
+        food_dist = 0
+        wall_dist = 1/(((self.game_instance.WIN_WIDTH - self.game_instance.snake_instance.head[0])/self.game_instance.BLOCK_WIDTH) + 1/self.game_instance.BLOCK_WIDTH)
+        body_dist = 0
         for x in range(self.game_instance.snake_instance.head[0], self.game_instance.WIN_WIDTH, self.game_instance.BLOCK_WIDTH):
             if (x == self.game_instance.food_instance.position[0] and self.game_instance.snake_instance.head[1] == self.game_instance.food_instance.position[1]):
-                #food_dist = (x - self.game_instance.snake_instance.head[0])/self.game_instance.BLOCK_WIDTH
-                food_dist = 1
+                food_dist = 1/((x - self.game_instance.snake_instance.head[0])/self.game_instance.BLOCK_WIDTH)
             
             if (x in self.game_instance.snake_instance.body[1:, 0] and self.game_instance.snake_instance.head[1] in self.game_instance.snake_instance.body[1:, 1]):
-                body_dist = 1/((x - self.game_instance.snake_instance.head[0])/self.game_instance.BLOCK_WIDTH)
+                body_dist = 1/(((x - self.game_instance.snake_instance.head[0])/self.game_instance.BLOCK_WIDTH) + 1/(self.game_instance.BLOCK_WIDTH))
         
         return food_dist, wall_dist, body_dist
     
     def look_up(self):
-        food_dist = -1
-        wall_dist = 1/((self.game_instance.snake_instance.head[1] + self.game_instance.BLOCK_HEIGHT)/self.game_instance.BLOCK_HEIGHT)
-        body_dist = -1
+        food_dist = 0
+        wall_dist = 1/((self.game_instance.snake_instance.head[1]/self.game_instance.BLOCK_HEIGHT) + 1/self.game_instance.BLOCK_HEIGHT)
+        body_dist = 0
         for y in reversed(range(0, self.game_instance.snake_instance.head[1], self.game_instance.BLOCK_HEIGHT)):
             if (self.game_instance.snake_instance.head[0] == self.game_instance.food_instance.position[0] and y == self.game_instance.food_instance.position[1]):
-                #food_dist = (self.game_instance.snake_instance.head[1] - y)/self.game_instance.BLOCK_HEIGHT
-                food_dist = 1
+                food_dist = 1/((self.game_instance.snake_instance.head[1] - y)/self.game_instance.BLOCK_HEIGHT)
             
             if (y in self.game_instance.snake_instance.body[1:, 1] and self.game_instance.snake_instance.head[0] in self.game_instance.snake_instance.body[1:, 0]):
-                body_dist = 1/((self.game_instance.snake_instance.head[1] - y)/self.game_instance.BLOCK_HEIGHT)
+                body_dist = 1/(((self.game_instance.snake_instance.head[1] - y)/self.game_instance.BLOCK_HEIGHT) + 1/(self.game_instance.BLOCK_HEIGHT))
         
         return food_dist, wall_dist, body_dist
 
     def look_down(self):
-        food_dist = -1
-        wall_dist = 1/((self.game_instance.WIN_HEIGHT - self.game_instance.snake_instance.head[1])/self.game_instance.BLOCK_HEIGHT)
-        body_dist = -1
+        food_dist = 0
+        wall_dist = 1/(((self.game_instance.WIN_HEIGHT - self.game_instance.snake_instance.head[1])/self.game_instance.BLOCK_HEIGHT) + 1/self.game_instance.BLOCK_HEIGHT)
+        body_dist = 0
         for y in range(self.game_instance.snake_instance.head[1], self.game_instance.WIN_HEIGHT, self.game_instance.BLOCK_HEIGHT):
             if (self.game_instance.snake_instance.head[0] == self.game_instance.food_instance.position[0] and y == self.game_instance.food_instance.position[1]):
-                #food_dist = (y - self.game_instance.snake_instance.head[1])/self.game_instance.BLOCK_HEIGHT
-                food_dist = 1
+                food_dist = 1/((y - self.game_instance.snake_instance.head[1])/self.game_instance.BLOCK_HEIGHT)
 
             elif (y in self.game_instance.snake_instance.body[1:, 1] and self.game_instance.snake_instance.head[0] in self.game_instance.snake_instance.body[1:, 0]):
-                body_dist = 1/((y - self.game_instance.snake_instance.head[1])/self.game_instance.BLOCK_HEIGHT)
+                body_dist = 1/(((y - self.game_instance.snake_instance.head[1])/self.game_instance.BLOCK_HEIGHT) + 1/(self.game_instance.BLOCK_HEIGHT))
         
         return food_dist, wall_dist, body_dist
         
@@ -79,44 +75,43 @@ class candidate:
         return np.argmax(pred)
         
     def move(self):
-        """
-        self.feedforward()
-        keys = pygame.key.get_pressed()
-        for event in pygame.event.get():
-            if (event.type == pygame.QUIT):
-                self.game_running = False
-                self.UPDATE_SPEED = 0
-                break
-            elif (event.type == pygame.KEYDOWN):
-                if (event.key == pygame.K_LEFT and self.game_instance.direction != (1, 0) and not self.game_instance.update_move):
-                    self.game_instance.direction = (-1, 0)
-                    self.game_instance.update_move = True
-                elif (event.key == pygame.K_RIGHT and self.game_instance.direction != (-1, 0) and not self.game_instance.update_move):
-                    self.game_instance.direction = (1, 0)
-                    self.game_instance.update_move = True
-                elif (event.key == pygame.K_DOWN and self.game_instance.direction != (0, -1) and not self.game_instance.update_move):
-                    self.game_instance.direction = (0, 1)
-                    self.game_instance.update_move = True
-                elif (event.key == pygame.K_UP and self.game_instance.direction != (0, 1) and not self.game_instance.update_move):
-                    self.game_instance.direction = (0, -1)
-                    self.game_instance.update_move = True
-        """
-        move = self.feedforward()
-        
-        if (move == 0 and self.game_instance.direction != (1, 0) and not self.game_instance.update_move):
-            self.game_instance.direction = (-1, 0)
-            self.game_instance.update_move = True
-        elif (move == 1 and self.game_instance.direction != (-1, 0) and not self.game_instance.update_move):
-            self.game_instance.direction = (1, 0)
-            self.game_instance.update_move = True
-        elif (move == 2 and self.game_instance.direction != (0, -1) and not self.game_instance.update_move):
-            self.game_instance.direction = (0, 1)
-            self.game_instance.update_move = True
-        elif (move == 3 and self.game_instance.direction != (0, 1) and not self.game_instance.update_move):
-            self.game_instance.direction = (0, -1)
-            self.game_instance.update_move = True
+        if (self.game_instance.human_playes):
+            keys = pygame.key.get_pressed()
+            for event in pygame.event.get():
+                if (event.type == pygame.QUIT):
+                    self.game_running = False
+                    self.UPDATE_SPEED = 0
+                    break
+                elif (event.type == pygame.KEYDOWN):
+                    if (event.key == pygame.K_LEFT and self.game_instance.direction != (1, 0) and not self.game_instance.update_move):
+                        self.game_instance.direction = (-1, 0)
+                        self.game_instance.update_move = True
+                    elif (event.key == pygame.K_RIGHT and self.game_instance.direction != (-1, 0) and not self.game_instance.update_move):
+                        self.game_instance.direction = (1, 0)
+                        self.game_instance.update_move = True
+                    elif (event.key == pygame.K_DOWN and self.game_instance.direction != (0, -1) and not self.game_instance.update_move):
+                        self.game_instance.direction = (0, 1)
+                        self.game_instance.update_move = True
+                    elif (event.key == pygame.K_UP and self.game_instance.direction != (0, 1) and not self.game_instance.update_move):
+                        self.game_instance.direction = (0, -1)
+                        self.game_instance.update_move = True
+        else:
+            move = self.feedforward()
             
-        self.game_instance.main()
+            if (move == 0 and self.game_instance.direction != (1, 0) and not self.game_instance.update_move):
+                self.game_instance.direction = (-1, 0)
+                self.game_instance.update_move = True
+            elif (move == 1 and self.game_instance.direction != (-1, 0) and not self.game_instance.update_move):
+                self.game_instance.direction = (1, 0)
+                self.game_instance.update_move = True
+            elif (move == 2 and self.game_instance.direction != (0, -1) and not self.game_instance.update_move):
+                self.game_instance.direction = (0, 1)
+                self.game_instance.update_move = True
+            elif (move == 3 and self.game_instance.direction != (0, 1) and not self.game_instance.update_move):
+                self.game_instance.direction = (0, -1)
+                self.game_instance.update_move = True
+                
+            self.game_instance.main()
         
     def run(self):
         while (self.game_instance.snake_instance.alive):
